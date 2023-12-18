@@ -1,0 +1,5 @@
+python-telegram-bot[rate-limiter]==20.1 # https://docs.python-telegram-bot.org/en/v20.1/
+pymongo==4.3.3 # Mongo DB
+PyYAML==6.0 # Allow us to work with .yml file
+python-dotenv==0.21.0 # Allow us to work with .env
+charade==1.0.3 # Mainly use to detect string encoding

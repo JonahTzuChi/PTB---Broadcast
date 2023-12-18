@@ -1,0 +1,5 @@
+ALLOWED_USERS: [] # List of telegram_id that can use the bot, if empty, all users can
+SYSTEM_ADMINS: [] # List of telegram_id that has full access to the bot
+
+GREETING: Hello, I am a bot. Thank you for using me.
+FAREWELL: I am sad to see you go. Nevertheless, I wish you all the best.
