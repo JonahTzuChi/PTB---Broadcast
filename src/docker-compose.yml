@@ -1,4 +1,4 @@
-version: "3"
+version: "3.4"
 
 # replace "ptb" with the short name of your project
 # mongodb, public_bot and private_bot are service names. They should be unique in this project.
@@ -12,7 +12,7 @@ services:
         image: mongo:4.4.21-focal
         restart: always
         expose:
-            - ${MONGODB_PORT:27017} # only allow inter-container communication
+            - ${MONGODB_PORT} # only allow inter-container communication
         volumes:
             - "./mongo/mongod.conf:/etc/mongod.conf"
             - "./storage/mongo:/data/db"
@@ -20,8 +20,9 @@ services:
     # The receiving end
     public_bot:
         container_name: ptb_public_bot
-        image: ./public_bot
+        build: ./public-bot
         restart: always
+        command: python3 src/main.py
         depends_on:
             - mongodb
         volumes:
@@ -37,8 +38,9 @@ services:
     # The firing end
     private_bot:
         container_name: ptb_private_bot
-        image: ./private_bot
+        build: ./private_bot
         restart: always
+        command: python3 src/main.py
         depends_on:
             - mongodb
             - public_bot
