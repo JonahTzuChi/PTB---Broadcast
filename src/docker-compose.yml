@@ -1,0 +1,53 @@
+version: "3"
+
+# replace "ptb" with the short name of your project
+# mongodb, public_bot and private_bot are service names. They should be unique in this project.
+# ptb_mongodb, ptb_public_bot and ptb_private_bot are container names. They should be unique as well across projects.
+# best practice is prefix them with the short name of your project.
+
+# below we register three services
+services:
+    mongodb:
+        container_name: ptb_mongodb
+        image: mongo:4.4.21-focal
+        restart: always
+        expose:
+            - ${MONGODB_PORT:27017} # only allow inter-container communication
+        volumes:
+            - "./mongo/mongod.conf:/etc/mongod.conf"
+            - "./storage/mongo:/data/db"
+
+    # The receiving end
+    public_bot:
+        container_name: ptb_public_bot
+        image: ./public_bot
+        restart: always
+        depends_on:
+            - mongodb
+        volumes:
+            - "./storage/app/public:/myapp:rw" # container specific storage space
+            - "./storage/app/shared:/shared:rw" # shared storage space
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: 1
+                    memory: 1024M
+
+    # The firing end
+    private_bot:
+        container_name: ptb_private_bot
+        image: ./private_bot
+        restart: always
+        depends_on:
+            - mongodb
+            - public_bot
+        volumes:
+            - "./storage/app/private:/myapp:rw" # container specific storage space
+            - "./storage/app/shared:/shared:rw" # shared storage space
+        deploy:
+            mode: global
+            resources:
+                limits:
+                    cpus: 2
+                    memory: 2048M
